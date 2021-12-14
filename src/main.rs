@@ -16,7 +16,7 @@ use crate::win::log_and_notify;
 
 mod win;
 
-const PATH_TO_LIST: &str = "paths.txt";
+const PROCS_NAMES_PATH: &str = "procs.txt";
 
 fn main() {
     let logger_config = ConfigBuilder::default()
@@ -50,16 +50,16 @@ fn main() {
 
 fn check_processes(mut sys: System) -> anyhow::Result<()> {
     loop {
-        info!("Obtaining paths from {:?}", PATH_TO_LIST);
-        let paths_list_string = fs::read_to_string(PATH_TO_LIST)?;
+        info!("Obtaining paths from {:?}", PROCS_NAMES_PATH);
+        let procs_names_string = fs::read_to_string(PROCS_NAMES_PATH)?;
 
-        if paths_list_string.len() > 0 {
-            let paths_list = paths_list_string.lines().collect::<HashSet<&str>>();
-            info!("Crated path set :\n{:#?}", paths_list);
+        if procs_names_string.len() > 0 {
+            let procs_names = procs_names_string.lines().collect::<HashSet<&str>>();
+            info!("Created path set :\n{:#?}", procs_names);
 
             sys.refresh_processes();
             for (pid, process) in sys.processes() {
-                if paths_list.contains(&process.name()) {
+                if procs_names.contains(&process.name()) {
                     let taskkill = Command::new("taskkill")
                         .args(["/F", "/PID", pid.to_string().as_str()])
                         .status();
@@ -81,7 +81,7 @@ fn check_processes(mut sys: System) -> anyhow::Result<()> {
                         }
                         Err(err) => {
                             let msg = format!(
-                                "Tried killing {:?}, got error (without code) :\n{:?}",
+                                "Tried killing {:?}, got error :\n{:?}",
                                 process.name(),
                                 err
                             );
@@ -93,8 +93,8 @@ fn check_processes(mut sys: System) -> anyhow::Result<()> {
             sleep(Duration::from_millis(1000));
         } else {
             let msg = format!(
-                "No path found in {path_to_list:?}. Please fill {path_to_list:?} with your paths.",
-                path_to_list = PATH_TO_LIST
+                "No path found in {path_to_procs_names:?}. Please fill {path_to_procs_names:?} with your paths.",
+                path_to_procs_names = PROCS_NAMES_PATH
             );
             log_and_notify(msg, Level::Error, false, 0);
         }
