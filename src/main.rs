@@ -1,3 +1,5 @@
+#![feature(hash_drain_filter)]
+
 use std::{
     collections::HashSet,
     fs::{File, self},
@@ -52,7 +54,8 @@ fn check_processes(mut sys: System) -> anyhow::Result<()> {
         let procs_names_string = fs::read_to_string(PROCS_NAMES_PATH)?;
 
         if procs_names_string.len() > 0 {
-            let procs_names = procs_names_string.lines().collect::<HashSet<&str>>();
+            let mut procs_names = procs_names_string.lines().collect::<HashSet<&str>>();
+            procs_names.drain_filter(|line| line.is_empty());
             info!("Created path set :\n{:#?}", procs_names);
 
             sys.refresh_processes();
