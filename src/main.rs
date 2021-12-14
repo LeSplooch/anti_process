@@ -20,8 +20,6 @@ const PROCS_NAMES_PATH: &str = "procs.txt";
 
 fn main() {
     let logger_config = ConfigBuilder::default()
-        .set_max_level(LevelFilter::Debug)
-        .set_location_level(LevelFilter::Off)
         .set_time_to_local(true)
         .build();
 
