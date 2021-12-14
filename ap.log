@@ -1,4 +1,2 @@
-04:12:15 Obtaining paths from "paths.txt"
-04:12:15 The system cannot find the file specified. (os error 2)
-04:12:17 Obtaining paths from "paths.txt"
-04:12:17 The system cannot find the file specified. (os error 2)
+04:24:39 [INFO] Obtaining paths from "procs.txt"
+04:24:39 [ERROR] The system cannot find the file specified. (os error 2)
